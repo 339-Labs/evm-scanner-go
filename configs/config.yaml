@@ -1,0 +1,76 @@
+# EVM Chain Scanner Configuration
+
+# 链配置
+chain:
+  name: "ethereum"           # 链名称
+  chain_id: 1                # 链ID
+  rpc_url: "https://mainnet.infura.io/v3/YOUR_API_KEY"  # RPC节点地址
+  ws_url: ""                 # WebSocket地址（可选）
+  start_block: 0             # 起始区块（0表示从最新区块开始）
+  confirmations: 12          # 确认数
+  batch_size: 100            # 批量获取区块数量（增大以适应高速出块）
+  poll_interval: 1           # 轮询间隔（秒）- 高速链可设为 0
+  
+  # 并发配置（针对高速出块链优化）
+  rpc_pool_size: 10          # RPC 连接池大小
+  block_workers: 20          # 区块处理并发数
+  tx_workers: 50             # 交易处理并发数
+  block_queue_size: 500      # 区块队列大小
+  max_retries: 3             # 最大重试次数
+  retry_interval_ms: 100     # 重试间隔（毫秒）
+
+  # 内部转账追踪配置（合约内部原生代币转账）
+  trace_enabled: true        # 是否启用 trace（需要节点支持 debug_trace 或 trace API）
+  trace_type: "debug"        # trace 类型: "debug" (Geth/BSC) 或 "trace" (Parity/Erigon)
+
+# MySQL配置
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "password"
+  database: "evm_scanner"
+  max_open_conns: 100
+  max_idle_conns: 10
+  conn_max_lifetime: 3600    # 连接最大生命周期（秒）
+
+# Redis配置
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  password: ""
+  db: 0
+  bloom_key: "address:bloom"  # Bloom过滤器的key
+
+# RocketMQ配置
+rocketmq:
+  name_server: "127.0.0.1:9876"
+  group_name: "evm_scanner_producer"
+  topic: "evm_transaction"
+  retry_times: 3
+  timeout: 3000              # 发送超时（毫秒）
+
+# 日志配置
+log:
+  level: "info"              # debug, info, warn, error
+  file: "logs/scanner.log"
+  max_size: 100              # MB
+  max_backups: 10
+  max_age: 30                # 天
+  compress: true
+
+# API 服务配置（RESTful HTTP）
+api:
+  host: "0.0.0.0"            # 监听地址
+  port: 8080                 # 监听端口
+  read_timeout: 30           # 读取超时（秒）
+  write_timeout: 30          # 写入超时（秒）
+
+# JSON-RPC 服务配置（以太坊标准 RPC 接口）
+rpc:
+  enabled: true              # 是否启用
+  host: "0.0.0.0"            # 监听地址
+  port: 8545                 # 监听端口（以太坊标准端口）
+  read_timeout: 30           # 读取超时（秒）
+  write_timeout: 30          # 写入超时（秒）
+
